@@ -1,0 +1,15 @@
+---
+
+ hypervisor_files:
+         - {path: /root/files_to_copy/file_1}
+
+ undercloud_files:
+         - {path: /root/files_to_copy/file_2}
+         - {path: /root/files_to_copy/file_3}
+         - {path: /root/files_to_copy/file_4}
+
+ overcloud_files:
+         - {path: /root/files_to_copy/file_5}
+         - {path: /root/files_to_copy/file_6 }
+         - {path: /root/files_to_copy/file_7 }
+

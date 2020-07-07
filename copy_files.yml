@@ -1,0 +1,17 @@
+---
+# - hosts: 192.168.204.192
+ - hosts: 192.168.1.10
+   gather_facts: false
+   
+   tasks:
+    - name: putting paths into a variable
+      include_vars:
+        file: paths.yml
+        name: paths
+    - name: copying the files
+      fetch:
+        src: "{{ item }}"
+        dest: /etc/ansible/copied_files/
+        flat: yes
+      with_items:
+        "{{ paths.values() | flatten | map(attribute='path') | list }}"    
