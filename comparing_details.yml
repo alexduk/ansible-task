@@ -1,19 +1,19 @@
 ---
   - stat:
-      path : "/etc/ansible/copied_files/{{item}}"
+      path : "{{src}}/{{item}}"
     register: my_first_file
 
   - set_fact:
      file_one: "{{ my_first_file.stat.checksum  }}"
 
   - stat:
-      path : "/etc/ansible/copied_files_backup/{{item}}"
+      path : "{{dest}}/{{item}}"
     register: my_second_file
 
   - set_fact:
       file_two: "{{ my_second_file.stat.checksum  }}"
 
-  - shell: diff /etc/ansible/copied_files/{{item}} /etc/ansible/copied_files_backup/{{item}}
+  - shell: diff {{src}}/{{item}} {{dest}}/{{item}}
     register: difference
     failed_when: difference.rc != 1 and difference.rc != 0
   
@@ -25,59 +25,59 @@
     # Change "stdout_callback" to "selective" in "ansible.cfg"
     tags: [print_action]
     
-  - shell: ls -ltr /etc/ansible/copied_files/{{item}} | awk "{print \$1}"
+  - shell: ls -ltr {{src}}/{{item}} | awk "{print \$1}"
     register: my_first_file_permission
     
-  - shell: ls -ltr /etc/ansible/copied_files_backup/{{item}} | awk "{print \$1}"
+  - shell: ls -ltr {{dest}}/{{item}} | awk "{print \$1}"
     register: my_second_file_permission
     
   - debug:
       msg:
        - "{{item}} permissions don't match!!"
-       - "/etc/ansible/copied_files/{{item}} permission is {{ my_first_file_permission.stdout_lines }}"
-       - "/etc/ansible/copied_files_backup/{{item}} permission is {{ my_second_file_permission.stdout_lines }}"
+       - "{{src}}/{{item}} permission is {{ my_first_file_permission.stdout_lines }}"
+       - "{{dest}}/{{item}} permission is {{ my_second_file_permission.stdout_lines }}"
     when:  my_first_file_permission.stdout_lines != my_second_file_permission.stdout_lines
     tags: [print_action]
     
-  - shell: ls -ltr /etc/ansible/copied_files/{{item}} | awk "{print \$3}"
+  - shell: ls -ltr {{src}}/{{item}} | awk "{print \$3}"
     register: my_first_file_owner
     
-  - shell: ls -ltr /etc/ansible/copied_files_backup/{{item}} | awk "{print \$3}"
+  - shell: ls -ltr {{dest}}/{{item}} | awk "{print \$3}"
     register: my_second_file_owner
     
   - debug:
       msg:
        - "{{item}} owners don't match!!"
-       - "/etc/ansible/copied_files/{{item}} owner is {{ my_first_file_owner.stdout_lines }}"
-       - "/etc/ansible/copied_files_backup/{{item}} owner is {{ my_second_file_owner.stdout_lines }}"
+       - "{{src}}/{{item}} owner is {{ my_first_file_owner.stdout_lines }}"
+       - "{{dest}}/{{item}} owner is {{ my_second_file_owner.stdout_lines }}"
     when:  my_first_file_owner.stdout_lines != my_second_file_owner.stdout_lines
     tags: [print_action]
   
-  - shell: ls -ltr /etc/ansible/copied_files/{{item}} | awk "{print \$4}"
+  - shell: ls -ltr {{src}}/{{item}} | awk "{print \$4}"
     register: my_first_file_group
     
-  - shell: ls -ltr /etc/ansible/copied_files_backup/{{item}} | awk "{print \$4}"
+  - shell: ls -ltr {{dest}}/{{item}} | awk "{print \$4}"
     register: my_second_file_group
     
   - debug:
       msg:
        - "{{item}} groups don't match!!"
-       - "/etc/ansible/copied_files/{{item}} group is {{ my_first_file_group.stdout_lines }}"
-       - "/etc/ansible/copied_files_backup/{{item}} group is {{ my_second_file_group.stdout_lines }}"
+       - "{{src}}/{{item}} group is {{ my_first_file_group.stdout_lines }}"
+       - "{{dest}}/{{item}} group is {{ my_second_file_group.stdout_lines }}"
     when:  my_first_file_group.stdout_lines != my_second_file_group.stdout_lines
     tags: [print_action]
   
-  - shell: ls -Z /etc/ansible/copied_files/{{item}} | awk "{print \$4}"
+  - shell: ls -Z {{src}}/{{item}} | awk "{print \$4}"
     register: my_first_file_SELinux
     
-  - shell: ls -Z /etc/ansible/copied_files_backup/{{item}} | awk "{print \$4}"
+  - shell: ls -Z {{dest}}/{{item}} | awk "{print \$4}"
     register: my_second_file_SELinux
     
   - debug:
       msg:
        - "{{item}} SELinux don't match!!"
-       - "/etc/ansible/copied_files/{{item}} SELinux is {{ my_first_file_SELinux.stdout_lines }}"
-       - "/etc/ansible/copied_files_backup/{{item}} SELinux is {{ my_second_file_SELinux.stdout_lines }}"
+       - "{{src}}/{{item}} SELinux is {{ my_first_file_SELinux.stdout_lines }}"
+       - "{{dest}}/{{item}} SELinux is {{ my_second_file_SELinux.stdout_lines }}"
     when:  my_first_file_SELinux.stdout_lines != my_second_file_SELinux.stdout_lines 
     tags: [print_action]
     

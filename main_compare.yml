@@ -2,7 +2,8 @@
  - hosts: localhost
    gather_facts: false
    tasks:
-    - shell: ls -ltr /etc/ansible/copied_files | awk "NR>1 {print \$9}"
+#    - shell: ls -ltr /etc/ansible/copied_files | awk "NR>1 {print \$9}"
+    - shell: ls -ltr "{{ src }}" | awk "NR>1 {print \$9}"
       register: files
     - name: Comparing files
       include_tasks: comparing_details.yml
